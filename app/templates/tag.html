@@ -1,0 +1,45 @@
+{% extends "base/layout.html" %}
+{% block meta_title %}
+    {{ tag.name }} - 爱夏的博客
+{% endblock %}
+{% block body %}
+
+    {% if tag.cover %}
+    <img src="{{ tag.cover }}" class="wechat-only">
+    <header id="header" class="home-header blog-background banner-mask lazy no cover"
+            data-url="{{ tag.cover }}">
+    {% else %}
+{#        无封面时显示默认图片#}
+    <img src="/" class="hide">
+    <header id="header" class="home-header blog-background banner-mask lazy no cover"
+            data-url="{{ user.blog_cover }}"
+            style="display: table; background-image: url({{ user.blog_cover }});">
+    {% endif %}
+
+{#    <header id="header" data-url="https://luoleiorg.b0.upaiyun.com/tmp/yasuko/yasuko.jpg"#}
+{#            class="home-header blog-background banner-mask lazy no cover"#}
+{#            style="display: table;#}
+{#            background-image: url("https://luoleiorg.b0.upaiyun.com/tmp/yasuko/yasuko.jpg!/format/webp");">#}
+
+        <div class="header-wrap"></div>
+        <div class="home-info-container">
+            <a href="/"><h2>Every thing about</h2></a>
+            <h4>「{{ tag.name }}」</h4>
+        </div>
+        <div class="arrow_down">
+               <a href="javascript:;"></a>
+        </div>
+    </header>
+
+{#{{! The main content area on the homepage }}#}
+<main id="main" class="content homepage" role="main">
+{#{{! Each post will be output using this markup }}#}
+{#{{> "loop"}}#}
+{% include '_loop.html' %}
+{#{{!! After all the posts, we have the previous/next pagination links }}#}
+
+{#{{!-- {{pagination}} --}}分页#}
+
+</main>
+
+{% endblock %}

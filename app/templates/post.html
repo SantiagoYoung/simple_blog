@@ -1,0 +1,173 @@
+{% extends "base/layout.html" %}
+{% block meta_title %}
+    {{ post.title }}
+{% endblock %}
+{% block body %}
+
+    {% if post.cover %}
+    <img src="{{ post.cover }}" class="wechat-only">
+    <header id="header" class="home-header blog-background banner-mask lazy" data-url="{{ post.cover }}">
+    {% else %}
+{#        无封面时显示默认图片#}
+    <img src="/" class="hide">
+    <header id="header" class="home-header blog-background banner-mask lazy"
+            data-url="{{ user.blog_cover }}"
+            style="display: table; background-image: url({{ user.blog_cover }});">
+    {% endif %}
+
+        <div class="nav-header">
+        <div class="nav-header-container">
+             <a href="{{ url_for('home.index') }}" class="back-home">Home</a>
+        </div>
+        </div>
+        <div class="header-wrap" >
+            <div class="post-info-container">
+                <h2 class="post-page-title ">
+                {{ post.title }}
+            </h2>
+                <time class="post-page-time">{{ moment(post.publish_date).format('LL') }}</time>
+                <span class="post-page-author">Viber</span>
+                <span class="post-page-tags">
+                    {% for tag in post.tags.all() %}
+                        <a href="{{ url_for('.tag', url_name=tag.url_name) }}">{{ tag.name }}</a>
+                    {% endfor %}
+               </span>
+            </div>
+
+        </div>
+        <div class="arrow_down">
+               <a href="javascript:;"></a>
+        </div>
+    </header>
+
+<main class="content" id="main" role="main">
+
+    <article class="post {{post_class}}">
+{#    正文#}
+        <section class="post-content">
+            <div class="single-post-inner">
+            {% if post.body_html %}
+                {{ post.body_html | safe }}
+            {% else %}
+                {{ post.body }}
+            {% endif %}
+                <div class="tag-box">
+                    {% for tag in post.tags.all() %}
+                        <a href="{{ url_for('.tag', url_name=tag.url_name) }}" style="color: rgb(255, 255, 255);" class="">
+                            <i class="iconfont iconfont-luolei"></i>{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+{#                <div class="money-like" id="like-money">#}
+{#                    悬停出二维码#}
+{#                    <div class="reward-button">赏#}
+{#                    <span class="money-code">#}
+{#                    <span class="alipay-code">#}
+{#                        <a href="javascript:;">#}
+{#                        <img data-url="/static/images/qr-alipay-256.png" class="alipay-img"#}
+{#                             src="data:image/gif;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQU#}
+{#                             xQSAsAAAABBxAREYiI/gcAAABWUDggGAAAADABAJ0BKgEAAQABABwlpAADcAD+/gbQAA=="><b>支付宝扫码打赏</b>#}
+{#                        </a>#}
+{#                    </span>#}
+{#                    <span class="wechat-code">#}
+{#                        <img data-url="/static/images/qr-wechat-256.png" class="wechat-img"#}
+{#                             src="data:image/gif;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQU#}
+{#                             xQSAsAAAABBxAREYiI/gcAAABWUDggGAAAADABAJ0BKgEAAQABABwlpAADcAD+/gbQAA=="><b>微信打赏</b>#}
+{#                    </span>#}
+{#                    </span>#}
+{##}
+{#                    </div>#}
+{#                    <p class="money-notice">若你觉得我的文章对你有帮助,欢迎点击上方按钮对我打赏</p>#}
+{#                </div>#}
+
+{#    个人信息#}
+        <section class="author">
+            <figure class="author-image duoshuo-loaded">
+                  用户头像
+                <a class="img" href="javascript:;" style="background-image: url('../static/images/eyes.png')">
+                    <span class="hide">Viber's Picture</span></a>
+            </figure>
+
+            <section class="author-detail">
+                <a href="#">Viber</a>
+                 <p>{{ user.author_detail }}</p>
+                <div class="author-meta">
+                    <span class="author-location">Chengdu「成都」</span>
+                    <span class="author-link"><a href="{{ url_for('home.index') }}">viber's blog</a></span>
+                </div>
+
+            </section>
+        </section>
+    </article>
+{#    其他社交站点#}
+    <section class="share">
+            <div class="share-icons" id="share-icons">
+{#               <a class="icon-share" href="http://weibo.com/720974234">#}
+{#                    <span class=""><i class="iconfont iconfont-weibo">&#xe607;</i></span>#}
+{#                </a>#}
+                <a class="icon-share icon-github" href="http://github.com/SantiagoYoung">
+                    <span class=""><i class="iconfont  iconfont-github">&#xe60d;</i></span>
+                </a>
+{#                <a class="icon-share icon-weibo" href="http://www.zhihu.com/people/suki-98-29">#}
+{#                    <span class=""><i class="iconfont  iconfont-zhihu">&#xe609;</i></span>#}
+{#                </a>#}
+            </div>
+    </section>
+
+{#    阅读下一篇#}
+    <aside class="read-next">
+        {% if pagination.has_prev %}
+{#            遍历上一页分页对象，虽然只有一个#}
+            {% for x in pagination.prev().items %}
+            {% if x.cover != None %}
+                <a class="read-next-story  lazy" data-url="{{ x.cover }}"
+                   style="display: flex; background-image: url({{ x.cover }} + '!/fw/750/format/webp');"
+                   href="{{ url_for('.post', url_name=x.url_name) }}">
+            {% else %}
+                <a class="read-next-story no-cover" href="{{ url_for('.post', url_name=x.url_name) }}">
+            {% endif %}
+            <section class="post">
+                <h2>{{ x.title }}</h2>
+                {% if post.summary != None %}
+                <p>{{ x.summary }}</p>
+                {% endif %}
+            </section>
+            </a>
+            {% endfor %}
+        {% endif %}
+
+        {% if pagination.has_next  %}
+            {% for x in pagination.next().items %}
+            {% if x.cover != None %}
+                <a class="read-next-story  lazy" data-url="{{ x.cover }}"
+                   style="display: flex; background-image: url({{ x.cover }} + '!/fw/750/format/webp');"
+                   href="{{ url_for('.post', url_name=x.url_name) }}">
+            {% else %}
+                <a class="read-next-story no-cover" href="{{ url_for('.post', url_name=x.url_name) }}">
+            {% endif %}
+            <section class="post">
+                <h2>{{ x.title }}</h2>
+                {% if post.summary != None %}
+                <p>{{ x.summary }}</p>
+                {% endif %}
+            </section>
+            </a>
+            {% endfor %}
+        {% endif %}
+    </aside>
+{#    多说评论#}
+    <section class="comment-area yasuko-only" >
+    <!-- 多说评论框 start -->
+        <div class="ds-thread" data-thread-key="{{ url_for('home.post', url_name=post.url_name) }}"
+             data-title="{{ url_for('home.post', url_name=post.title) }}"
+             data-url="{{ url_for('home.post', url_name=post.url_name) }}">
+        </div>
+    <!-- 多说评论框 end -->
+
+    </section>
+
+</main>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/prism.js') }}"></script>
+<!-- Highlight.js -->
+<script >hljs.initHighlightingOnLoad();</script>
+{% endblock %}

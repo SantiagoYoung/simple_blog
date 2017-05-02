@@ -1,0 +1,30 @@
+{% extends "base/layout.html" %}
+{% block body %}
+
+    <header id="header" data-url="{{ user.blog_cover }}"
+            class="home-header blog-background banner-mask lazy no cover"
+            style="display: table;
+            background-image: url({{ user.blog_cover }});">
+
+        <div class="header-wrap"></div>
+        <div class="home-info-container">
+            <a href="/"><h2>{{ user.blog_title }}</h2></a>
+            <h4>{{ user.blog_description }}</h4>
+        </div>
+        <div class="arrow_down" data-offset="-45">
+               <a href="javascript:;"></a>
+        </div>
+    </header>
+
+{#{{! The main content area on the homepage }}#}
+<main id="main" class="content homepage" role="main">
+{#{{! Each post will be output using this markup }}#}
+{#{{> "loop"}}#}
+{% include '_loop.html' %}
+{#{{!! After all the posts, we have the previous/next pagination links }}#}
+
+{#{{!-- {{pagination}} --}}分页#}
+
+</main>
+
+{% endblock %}

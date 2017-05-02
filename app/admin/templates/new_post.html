@@ -1,0 +1,38 @@
+{% extends "dashboard.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="{{ url_for('admin.static', filename='md_editor/dist/marked.min.js') }}"></script>
+    <script src="{{ url_for('admin.static', filename='md_editor/dist/jquery.textarea-markdown-editor.js') }}"></script>
+
+    <script>
+        $(function(){
+          var $editor = $('#editor');
+          var $preview = $('#preview');
+
+          $editor.markdownEditor({
+            onInsertedList: function(){ console.log("inserted list"); },
+            onInsertedTable: function(){ console.log("inserted table"); },
+            onInsertedCodeblock: function(){ console.log("inserted codeblock"); }
+          }).focus();
+
+         t= setInterval(function(){
+            $preview.html(marked($editor[0].value));
+          }, 1000);
+        });
+    </script>
+{% endblock %}
+
+
+{% block page_content %}
+    {% include "_editor.html" %}
+{% endblock %}
+
+
+{% block scripts %}
+{#    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>#}
+    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+{% endblock %}
+
+

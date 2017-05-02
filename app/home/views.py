@@ -1,0 +1,41 @@
+#coding=utf-8
+from . import home
+from app.models import Post, Tag, User
+from flask import render_template, request, abort
+
+
+
+@home.route('/', methods=['GET', 'POST'])
+def index():
+    page = request.args.get('page', 1, type=int)
+    user = User.query.get_or_404(1)
+    pagination = Post.query.filter_by(publish=True).order_by(
+        Post.publish_date.desc()).paginate(page,
+                                           per_page=user.posts_per_page,
+                                           error_out=False
+    )
+    posts = pagination.items
+    return render_template('index.html', posts=posts, pagination=pagination, user=user)
+
+@home.route('/post/<url_name>')
+def post(url_name):
+    post = Post.query.filter_by(url_name=url_name).first_or_404()
+    if post.publish == 0:
+        abort(404)
+    pagination = Post.query.filter_by(publish=True).order_by(Post.publish_date.desc()).paginate(
+        1, per_page=1, error_out=False
+    )
+    user = User.query.get_or_404(1)
+    return render_template('post.html', pagination=pagination, user=user, post=post)
+
+@home.route('/tag/<url_name>')
+def tag(url_name):
+    tag = Tag.query.filter_by(url_name=url_name).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    user = User.query.get_or_404(1)
+    pagination = tag.posts.order_by(Post.publish_date.desc()).paginate(
+        page, per_page=user.Posts_per_page,
+        error_out=False
+    )
+    posts = pagination.items
+    return render_template('tag.html', tag=tag, posts=posts, pagination=pagination, user=user)
